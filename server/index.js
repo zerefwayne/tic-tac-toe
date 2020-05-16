@@ -123,7 +123,7 @@ io.on("connection", (socket) => {
     let c = data.move.c;
 
     if (games[gameId] != null) {
-      
+
       games[gameId].playMove(r, c);
 
       const payload = {
@@ -132,6 +132,21 @@ io.on("connection", (socket) => {
 
       io.sockets.in(gameId).emit("UPDATE_GAME", payload);
     }
+
+  });
+
+  socket.on("RESET_GAME", (gameId) => {
+
+    if (games[gameId] != null) {
+      games[gameId].resetGame();
+
+      const payload = {
+        game: games[gameId].getGameState(),
+      };
+
+      io.sockets.in(gameId).emit("UPDATE_GAME", payload);
+    }
+
 
   });
 

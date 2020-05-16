@@ -44,7 +44,7 @@
 
         <button class="btn btn-success" v-if="game.state == 1" @click="startGame">Start Game</button>
 
-        <template v-if="game.state == 2">
+        <template v-if="game.state >= 2">
           <h2>{{getMove()}}</h2>
 
           <div class="mt-5">
@@ -58,6 +58,11 @@
               </tr>
             </table>
           </div>
+
+          <p
+            v-if="game.state == 3"
+          >{{ game.result.tie ? "It's a tie" : `Player ${game.result.winner.id} won!` }}</p>
+          <button @click="resetGame" v-if="game.state == 3" class="btn btn-success">Play Again?</button>
         </template>
       </template>
     </div>
@@ -126,6 +131,11 @@ export default {
       }
     },
     playMove(r, c) {
+
+      if(this.game.state != 2) {
+        return;
+      }
+
       if (this.isMyMove) {
         const payload = {
           game: this.game.id,
@@ -136,6 +146,9 @@ export default {
       } else {
         alert("Not your move buddy!");
       }
+    },
+    resetGame() {
+      this.$socket.emit("RESET_GAME", this.game.id);
     }
   },
   mounted() {
@@ -171,6 +184,9 @@ export default {
     this.$socket.on("LEAVE_GAME", () => {
       this.inGame = false;
     });
+
+
+
   }
 };
 </script>
