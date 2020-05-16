@@ -1,19 +1,178 @@
 <template>
   <div id="app">
-    Hey
+    <div class="sidebar">
+      <h6 class="mb-3" style="color: gray;">Hey, {{ user.id }}!</h6>
+      <h3 style="color: #666;">Online Users</h3>
+      <ul class="list-group mt-3">
+        <li class="list-group-item" v-for="user in users" :key="user.id">
+          <small class="mr-2">{{ user.isPlaying ? "🟡": "🟢"}}</small>
+          {{user.id}}
+        </li>
+      </ul>
+    </div>
+    <div class="game">
+      <template v-if="!inGame">
+        <h3>New Game</h3>
+        <button class="btn btn-primary mt-4" @click="createGame">New Game</button>
+        <hr class="mt-4 mb-4" />
+        <h3>Join Game</h3>
+        <form class="mt-4" @submit.prevent="joinGame">
+          <div class="form-group">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Enter Game ID"
+              style="width: 300px"
+              v-model="joinGameId"
+            />
+          </div>
+          <div class="form-group">
+            <button class="btn btn-primary" type="submit">Join Game</button>
+          </div>
+        </form>
+      </template>
+      <template v-if="inGame">
+        <button class="btn btn-outline-secondary" @click="leaveGame">Leave Game</button>
+        <p class="mt-4">Game ID: {{ game.id }}</p>
+        <p class="mt-4">{{getStatus()}}</p>
+        <p
+          v-if="game.players.player1 != null"
+        >Player 1: {{ game.players.player1.id }} | {{ game.players.player1.symbol }}</p>
+        <p
+          v-if="game.players.player2 != null"
+        >Player 2: {{ game.players.player2.id }} | {{ game.players.player2.symbol }}</p>
+
+        <button class="btn btn-success" v-if="game.state == 1" @click="startGame">Start Game</button>
+
+        <template v-if="game.state == 2">
+          <h2>{{getMove()}}</h2>
+
+          <div class="mt-5">
+            <table class="grid">
+              <tr v-for="r in [0, 1, 2]" :key="r">
+                <td
+                  v-for="c in [0, 1, 2]"
+                  :key="`${r}${c}`"
+                  @click="() => {playMove(r, c)}"
+                >{{ game.board[r][c].player ? game.board[r][c].player.symbol : "" }}</td>
+              </tr>
+            </table>
+          </div>
+        </template>
+      </template>
+    </div>
   </div>
 </template>
 
 <script>
-
 export default {
-  name: 'App',
-  components: {
+  name: "App",
+  components: {},
+  data() {
+    return {
+      user: {
+        id: "",
+        isPlaying: false
+      },
+      users: [],
+      inGame: false,
+      joinGameId: null,
+      game: null,
+      isMyMove: false
+    };
+  },
+  methods: {
+    joinGame() {
+      this.$socket.emit("JOIN_GAME", this.joinGameId);
+    },
+    createGame() {
+      console.log("Creating new game!");
+      this.$socket.emit("NEW_GAME");
+    },
+    leaveGame() {
+      this.$socket.emit("LEAVE_GAME");
+    },
+    startGame() {
+      this.$socket.emit("START_GAME", this.game.id);
+    },
+    getStatus() {
+      let status = "";
+
+      switch (this.game.state) {
+        case 0:
+          status = "Waiting for 2nd player";
+          break;
+        case 1:
+          status = "Ready to start";
+          break;
+        case 2:
+          status = "In game!";
+          break;
+      }
+
+      return status;
+    },
+    getMove() {
+      if (this.game.move == 0) {
+        this.isMyMove = this.game.players.player1.id === this.user.id;
+      } else {
+        this.isMyMove = this.game.players.player2.id === this.user.id;
+      }
+
+      if (this.isMyMove) {
+        return "Your move!";
+      } else {
+        return "Other's move!";
+      }
+    },
+    playMove(r, c) {
+      if (this.isMyMove) {
+        const payload = {
+          game: this.game.id,
+          move: { r, c }
+        };
+
+        this.$socket.emit("MOVE_GAME", payload);
+      } else {
+        alert("Not your move buddy!");
+      }
+    }
   },
   mounted() {
-    console.log("connected", this.$socket);
+    this.$socket.on("INIT", data => {
+      this.user = data.user;
+      this.users = data.users;
+    });
+
+    this.$socket.on("JOIN_USER", data => {
+      this.users.push(data.user);
+      this.users = this.users.sort((a, b) => (a.id < b.id ? -1 : 1));
+    });
+
+    this.$socket.on("LEAVE_USER", data => {
+      this.users = this.users.filter(user => {
+        return user.id != data.user.id;
+      });
+      this.users = this.users.sort((a, b) => (a.id < b.id ? -1 : 1));
+    });
+
+    this.$socket.on("ENTER_GAME", data => {
+      console.log(data);
+
+      this.game = data.game;
+      this.inGame = true;
+    });
+
+    this.$socket.on("UPDATE_GAME", data => {
+      console.log("update", data);
+      this.game = data.game;
+    });
+
+    this.$socket.on("LEAVE_GAME", () => {
+      this.inGame = false;
+    });
   }
-}
+};
 </script>
 
 <style lang="scss">
@@ -21,5 +180,37 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  height: 100vh;
+  width: 100%;
+  position: relative;
+
+  display: flex;
+  justify-items: stretch;
+
+  .sidebar {
+    flex: 25% 0 0;
+    padding: 2rem;
+    border-right: 1px solid #dddddd;
+  }
+
+  .game {
+    flex: 1 0 0;
+    padding: 2rem;
+  }
+
+  .grid {
+    td {
+      width: 100px;
+      height: 100px;
+      text-align: center;
+      cursor: pointer;
+      // display: flex;
+      // justify-content: center;
+      // align-items: center;
+      border: 1px solid gray;
+    }
+    border-collapse: collapse;
+  }
 }
 </style>

@@ -1,18 +1,15 @@
 import Vue from "vue";
 import App from "./App.vue";
 
-import VueSocketIO from "vue-socket.io";
+import socket from "socket.io-client";
 
 import "bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles/global.scss";
 
-Vue.use(
-  new VueSocketIO({
-    debug: true,
-    connection: "http://localhost:5000/",
-  })
-);
+const io = socket.connect("http://localhost:5000/");
+
+Vue.prototype.$socket = io;
 
 Vue.config.productionTip = false;
 
