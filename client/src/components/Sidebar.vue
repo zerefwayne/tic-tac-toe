@@ -139,7 +139,7 @@ export default {
 
   .credits {
     padding: 1rem;
-    background-color: darken($color: #0052CC, $amount: 3%);
+    background-color: #0052CC;
     color: white;
     text-align: center;
 

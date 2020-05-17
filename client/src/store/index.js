@@ -10,8 +10,19 @@ export default new Vuex.Store({
       isPlaying: false,
     },
     users: [],
+    activeComponent: "app-dashboard",
+    game: null,
   },
   mutations: {
+    updateGame(state, payload) {
+      state.game = payload;
+    },
+    switchToDashboard(state) {
+      state.activeComponent = "app-dashboard"
+    },
+    switchToGame(state) {
+      state.activeComponent = "app-gamescreen"
+    },
     updateUser(state, payload) {
       state.user = payload;
     },
