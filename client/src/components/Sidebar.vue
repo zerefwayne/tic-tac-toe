@@ -1,19 +1,31 @@
 <template>
   <div class="app-sidebar">
-      <div class="title-box">
-          <h2 class="title">XOXO</h2>
-          <h6 class="subtitle">A TicTacToe Game</h6>
+    <div class="title-box">
+      <h2 class="title">XOXO</h2>
+      <h6 class="subtitle">A TicTacToe Game</h6>
+    </div>
+    <div class="user-details">Welcome, {{user.id}}</div>
+    <div class="online-users">
+      <div class="heading">
+        <p>Online Users</p>
+        <div>{{ users.length }}</div>
       </div>
-      <div class="user-details">
-          Welcome, {{user.id}}
+      <div class="user-list-container">
+        <vue-scroll
+          :ops="{bar: {
+          background: '#ffffff',
+          keepShow: false,
+          size: '6px',
+          minSize: 0.2,
+          opacity: '0.9'
+        },}"
+        >
+          <ul class="user-list">
+            <li class="user-list-item" v-for="user in users" :key="user.id">{{user.id}}</li>
+          </ul>
+        </vue-scroll>
       </div>
-      <h3 style="color: #666;">Online Users</h3>
-      <ul class="list-group mt-3">
-        <li class="list-group-item" v-for="user in users" :key="user.id">
-          <small class="mr-2">{{ user.isPlaying ? "🟡": "🟢"}}</small>
-          {{user.id}}
-        </li>
-      </ul>
+    </div>
   </div>
 </template>
 
@@ -41,39 +53,85 @@ export default {
 .app-sidebar {
   width: 100%;
   height: 100%;
-  background-color: #0052CC;
+  background-color: #0052cc;
   display: flex;
   flex-direction: column;
   align-items: stretch;
 
-    .title-box {
+  .title-box {
+    background-color: #172b4d;
+    color: white;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 
-        background-color: #172B4D;
-        color: white;
-        padding: 1.5rem;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-
-        .title {
-            font-family: 'IBM Plex Sans';
-            font-size: 3rem;
-            margin-bottom: 0;
-        }
-
-        .subtitle {
-            color: #F2F2F2;
-        }
-
+    .title {
+      font-family: "IBM Plex Sans";
+      font-size: 3rem;
+      margin-bottom: 0;
     }
 
-    .user-details {
-        padding: 1rem;
-        background-color: darken($color: #0052CC, $amount: 2%);
+    .subtitle {
+      color: #f2f2f2;
+    }
+  }
+
+  .user-details {
+    padding: 1rem;
+    background-color: darken($color: #0052cc, $amount: 2%);
+    color: white;
+    text-align: center;
+  }
+
+  .online-users {
+    flex: 50% 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: stretch;
+    padding: 1.5rem;
+
+    .heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+
+      p {
+        font-size: 1.4rem;
+        margin-bottom: 0;
+      }
+
+      div {
         color: white;
-        text-align: center;
+        font-weight: bold;
+      }
     }
 
+    .user-list-container {
+      flex: 1 0 0;
+      background-color: darken($color: #0052cc, $amount: 5%);
+      border-radius: 3px;
+      border-radius: 4px;
+      overflow-x: hidden;
+      margin-top: 1rem;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: stretch;
+
+      .user-list {
+        list-style: none;
+        flex: 1;
+
+        .user-list-item {
+          color: white;
+          padding: 1rem 1rem 0.5rem 1rem;
+        }
+      }
+    }
+  }
 }
 </style>
