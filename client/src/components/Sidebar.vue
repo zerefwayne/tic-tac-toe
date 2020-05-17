@@ -26,6 +26,9 @@
         </vue-scroll>
       </div>
     </div>
+    <div class="credits">
+      Developed by <a href="https://www.github.com/zerefwayne" target="_blank" class="profile-link">Aayush Joglekar</a>
+    </div>
   </div>
 </template>
 
@@ -86,7 +89,7 @@ export default {
   }
 
   .online-users {
-    flex: 50% 0 0;
+    flex: 1 0 0;
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -132,6 +135,20 @@ export default {
         }
       }
     }
+  }
+
+  .credits {
+    padding: 1rem;
+    background-color: darken($color: #0052CC, $amount: 3%);
+    color: white;
+    text-align: center;
+
+    .profile-link{
+      text-decoration: none;
+      text-decoration: underline;
+      color: white;
+    }
+
   }
 }
 </style>
