@@ -108,7 +108,7 @@ export default {
       }
     },
     playMove(r, c) {
-      if (this.game.state != 2) {
+      if (this.game.state != 2 || this.game.board[r][c].player != null) {
         return;
       }
 
