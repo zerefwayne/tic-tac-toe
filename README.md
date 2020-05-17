@@ -1,2 +1,10 @@
-# tic-tac-toe
-A multiplayer tic-toe-game built with Socket.io and NodeJS
+# XOXO
+A Multiplayer TicTacToe game build with VueJS, SocketIO & NodeJS
+
+### Screenshots
+
+#### Game Screen
+![Game](.github/game.png)
+
+#### Dashboard
+![Dashboard](.github/dash.png)
