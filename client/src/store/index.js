@@ -12,16 +12,20 @@ export default new Vuex.Store({
     users: [],
     activeComponent: "app-welcome",
     game: null,
+    titleHeight: 200,
   },
   mutations: {
+    setTitleHeight(state, payload) {
+      state.titleHeight = payload;
+    },
     updateGame(state, payload) {
       state.game = payload;
     },
     switchToDashboard(state) {
-      state.activeComponent = "app-dashboard"
+      state.activeComponent = "app-dashboard";
     },
     switchToGame(state) {
-      state.activeComponent = "app-gamescreen"
+      state.activeComponent = "app-gamescreen";
     },
     updateUser(state, payload) {
       state.user = payload;
@@ -35,11 +39,11 @@ export default new Vuex.Store({
       state.users.sort((a, b) => (a.id < b.id ? -1 : 1));
     },
     leaveUser(state, payload) {
-      state.users = state.users.filter(user => {
+      state.users = state.users.filter((user) => {
         return user.id != payload.id;
       });
       state.users.sort((a, b) => (a.id < b.id ? -1 : 1));
-    }
+    },
   },
   actions: {},
   modules: {},

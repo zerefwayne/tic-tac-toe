@@ -1,37 +1,55 @@
 <template>
   <div class="app-game">
-    <button class="btn btn-outline-secondary" @click="leaveGame">Leave Game</button>
-    <p class="mt-4">Game ID: {{ game.id }}</p>
-    <p class="mt-4">{{getStatus()}}</p>
-    <p
-      v-if="game.players.player1 != null"
-    >Player 1: {{ game.players.player1.name }} | {{ game.players.player1.symbol }}</p>
-    <p
-      v-if="game.players.player2 != null"
-    >Player 2: {{ game.players.player2.name }} | {{ game.players.player2.symbol }}</p>
-
-    <button class="btn btn-success" v-if="game.state == 1" @click="startGame">Start Game</button>
-
-    <template v-if="game.state >= 2">
-      <h2>{{getMove()}}</h2>
-
-      <div class="mt-5">
-        <table class="grid">
-          <tr v-for="r in [0, 1, 2]" :key="r">
-            <td
-              v-for="c in [0, 1, 2]"
-              :key="`${r}${c}`"
-              @click="() => {playMove(r, c)}"
-            >{{ game.board[r][c].player ? game.board[r][c].player.symbol : "" }}</td>
-          </tr>
-        </table>
+    <div class="game-header" :style="`height: ${titleHeight}px;`">
+      <div class="player player1">
+        <img src="@/assets/x-white.png" />
+        <span
+          class="player-name ml-3"
+          v-if="game.players.player1 != null"
+        >{{ game.players.player1.name }}</span>
       </div>
+      <div class="player player2">
+        <img src="@/assets/o-white.png" />
+        <span
+          class="player-name mr-3"
+          v-if="game.players.player2 != null"
+        >{{ game.players.player2.name }}</span>
+        <span class="player-name mr-3" v-else>Awaiting Player</span>
+      </div>
+    </div>
+    <div class="game-window">
+      <p class="mt-4">{{getStatus()}}</p>
 
-      <p
-        v-if="game.state == 3"
-      >{{ game.result.tie ? "It's a tie" : `Player ${game.result.winner.name} won!` }}</p>
-      <button @click="resetGame" v-if="game.state == 3" class="btn btn-success">Play Again?</button>
-    </template>
+      <button class="btn btn-success" v-if="game.state == 1" @click="startGame">Start Game</button>
+
+      <template v-if="game.state >= 2">
+        <h2>{{getMove()}}</h2>
+
+        <div class="mt-5">
+          <table class="grid">
+            <tr v-for="r in [0, 1, 2]" :key="r">
+              <td
+                v-for="c in [0, 1, 2]"
+                :key="`${r}${c}`"
+                @click="() => {playMove(r, c)}"
+              >{{ game.board[r][c].player ? game.board[r][c].player.symbol : "" }}</td>
+            </tr>
+          </table>
+        </div>
+
+        <p
+          v-if="game.state == 3"
+        >{{ game.result.tie ? "It's a tie" : `Player ${game.result.winner.name} won!` }}</p>
+        <button @click="resetGame" v-if="game.state == 3" class="btn btn-success">Play Again?</button>
+      </template>
+    </div>
+    <div class="game-footer">
+      <span class="mr-3" v-clipboard:copy="game.id" style="cursor: pointer;">Game ID: {{ game.id }}</span>
+
+      <form @submit.prevent="leaveGame">
+        <button class="btn btn-outline-danger mb-0" type="submit">Leave Game</button>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -42,7 +60,8 @@ export default {
   name: "app-game",
   computed: mapState({
     user: state => state.user,
-    game: state => state.game
+    game: state => state.game,
+    titleHeight: state => state.titleHeight
   }),
   methods: {
     leaveGame() {
@@ -105,4 +124,48 @@ export default {
 </script>
 
 <style lang="scss">
+.app-game {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  .game-header {
+    background-color: #222222;
+
+    display: flex;
+    color: white;
+
+    align-items: stretch;
+
+    .player {
+      flex: 1;
+      padding: 2rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .player1 {
+    }
+
+    .player2 {
+      flex-direction: row-reverse;
+    }
+
+    .player-name {
+      font-size: 2rem;
+    }
+  }
+
+  .game-window {
+    flex: 1;
+  }
+
+  .game-footer {
+    background-color: #f7f7f7;
+    display: flex;
+    height: 4rem;
+    align-items: center;
+    padding: 0 2rem;
+    justify-content: flex-end;
+  }
+}
 </style>

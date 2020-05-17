@@ -5,7 +5,8 @@ import store from "./store";
 
 import socket from "socket.io-client";
 
-import vuescroll from 'vuescroll';
+import vuescroll from "vuescroll";
+import VueClipboard from "vue-clipboard2";
 
 import "bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -14,6 +15,7 @@ import "./styles/global.scss";
 const io = socket.connect("http://localhost:5000/");
 
 Vue.use(vuescroll);
+Vue.use(VueClipboard);
 
 Vue.prototype.$socket = io;
 

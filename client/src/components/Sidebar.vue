@@ -1,6 +1,6 @@
 <template>
   <div class="app-sidebar">
-    <div class="title-box">
+    <div class="title-box" ref="titlebox">
       <h2 class="title">XOXO</h2>
       <h6 class="subtitle">A TicTacToe Game</h6>
     </div>
@@ -52,9 +52,7 @@ export default {
     FadeTransition
   },
   mounted() {
-    console.log(this.user);
-    console.log(this.users);
-    console.log(this.$store.state);
+    this.$store.commit('setTitleHeight', this.$refs.titlebox.clientHeight || 200);
   },
   computed: mapState({
     user: state => state.user,

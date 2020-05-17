@@ -15,6 +15,7 @@
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0",
     "vue": "^2.6.11",
+    "vue-clipboard2": "^0.3.1",
     "vue-socket.io": "^3.0.9",
     "vue2-transitions": "^0.3.0",
     "vuescroll": "^4.15.0",
