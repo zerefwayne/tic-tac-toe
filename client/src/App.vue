@@ -1,14 +1,7 @@
 <template>
   <div id="app">
-    <div class="sidebar">
-      <h6 class="mb-3" style="color: gray;">Hey, {{ user.id }}!</h6>
-      <h3 style="color: #666;">Online Users</h3>
-      <ul class="list-group mt-3">
-        <li class="list-group-item" v-for="user in users" :key="user.id">
-          <small class="mr-2">{{ user.isPlaying ? "🟡": "🟢"}}</small>
-          {{user.id}}
-        </li>
-      </ul>
+    <div class="app-sidebar-container">
+      <app-sidebar v-bind:user="user" v-bind:users="users"/>
     </div>
     <div class="game">
       <template v-if="!inGame">
@@ -70,9 +63,13 @@
 </template>
 
 <script>
+import Sidebar from "./components/Sidebar.vue";
+
 export default {
   name: "App",
-  components: {},
+  components: {
+    "app-sidebar": Sidebar
+  },
   data() {
     return {
       user: {
@@ -153,20 +150,16 @@ export default {
   },
   mounted() {
     this.$socket.on("INIT", data => {
-      this.user = data.user;
-      this.users = data.users;
+      this.$store.commit("updateUser", data.user);
+      this.$store.commit("updateUsers", data.users);
     });
 
     this.$socket.on("JOIN_USER", data => {
-      this.users.push(data.user);
-      this.users = this.users.sort((a, b) => (a.id < b.id ? -1 : 1));
+      this.$store.commit("joinUser", data.user);
     });
 
     this.$socket.on("LEAVE_USER", data => {
-      this.users = this.users.filter(user => {
-        return user.id != data.user.id;
-      });
-      this.users = this.users.sort((a, b) => (a.id < b.id ? -1 : 1));
+      this.$store.commit("leaveUser", data.user);
     });
 
     this.$socket.on("ENTER_GAME", data => {
@@ -190,10 +183,9 @@ export default {
 
 <style lang="scss">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: "IBM Plex Sans", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
   height: 100vh;
   width: 100%;
   position: relative;
@@ -201,9 +193,8 @@ export default {
   display: flex;
   justify-items: stretch;
 
-  .sidebar {
-    flex: 25% 0 0;
-    padding: 2rem;
+  .app-sidebar-container {
+    flex: 22% 0 0;
     border-right: 1px solid #dddddd;
   }
 
