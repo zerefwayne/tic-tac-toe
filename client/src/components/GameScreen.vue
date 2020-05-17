@@ -5,10 +5,10 @@
     <p class="mt-4">{{getStatus()}}</p>
     <p
       v-if="game.players.player1 != null"
-    >Player 1: {{ game.players.player1.id }} | {{ game.players.player1.symbol }}</p>
+    >Player 1: {{ game.players.player1.name }} | {{ game.players.player1.symbol }}</p>
     <p
       v-if="game.players.player2 != null"
-    >Player 2: {{ game.players.player2.id }} | {{ game.players.player2.symbol }}</p>
+    >Player 2: {{ game.players.player2.name }} | {{ game.players.player2.symbol }}</p>
 
     <button class="btn btn-success" v-if="game.state == 1" @click="startGame">Start Game</button>
 
@@ -29,7 +29,7 @@
 
       <p
         v-if="game.state == 3"
-      >{{ game.result.tie ? "It's a tie" : `Player ${game.result.winner.id} won!` }}</p>
+      >{{ game.result.tie ? "It's a tie" : `Player ${game.result.winner.name} won!` }}</p>
       <button @click="resetGame" v-if="game.state == 3" class="btn btn-success">Play Again?</button>
     </template>
   </div>

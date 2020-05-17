@@ -1,19 +1,18 @@
 class User {
+  constructor(socket, name) {
+    this.id = socket.id;
+    this.socket = socket;
+    this.name = name;
+    this.isPlaying = false;
+  }
 
-    constructor(socket) {
-        this.id = socket.id;
-        this.socket =  socket;
-        this.isPlaying = false;
-    }
-
-    getDetails() {
-        return {
-            id: this.id,
-            isPlaying: this.isPlaying
-        }
-    }
-
+  getDetails() {
+    return {
+      id: this.id,
+      name: this.name,
+      isPlaying: this.isPlaying,
+    };
+  }
 }
-
 
 module.exports = User;

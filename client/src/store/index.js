@@ -10,7 +10,7 @@ export default new Vuex.Store({
       isPlaying: false,
     },
     users: [],
-    activeComponent: "app-dashboard",
+    activeComponent: "app-welcome",
     game: null,
   },
   mutations: {
@@ -31,13 +31,13 @@ export default new Vuex.Store({
     },
     joinUser(state, payload) {
       state.users.push(payload);
-      state.users = state.users.sort((a, b) => (a.id < b.id ? -1 : 1));
+      state.users.sort((a, b) => (a.id < b.id ? -1 : 1));
     },
     leaveUser(state, payload) {
       state.users = state.users.filter(user => {
         return user.id != payload.id;
       });
-      state.users = state.users.sort((a, b) => (a.id < b.id ? -1 : 1));
+      state.users.sort((a, b) => (a.id < b.id ? -1 : 1));
     }
   },
   actions: {},

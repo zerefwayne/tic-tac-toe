@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <div class="app-sidebar-container">
+    
+    <div v-if="activeComponent != 'app-welcome'" class="app-sidebar-container">
       <app-sidebar v-bind:user="user" v-bind:users="users" />
     </div>
     <div class="app-content-container">
@@ -13,6 +14,7 @@
 import Sidebar from "./components/Sidebar.vue";
 import Dashboard from "./components/Dashboard.vue";
 import GameScreen from "./components/GameScreen.vue";
+import Welcome from "./components/Welcome.vue";
 
 import { mapState } from "vuex";
 export default {
@@ -20,7 +22,8 @@ export default {
   components: {
     "app-sidebar": Sidebar,
     "app-gamescreen": GameScreen,
-    "app-dashboard": Dashboard
+    "app-dashboard": Dashboard,
+    "app-welcome": Welcome
   },
   data() {
     return {
@@ -37,8 +40,10 @@ export default {
   }),
   mounted() {
     this.$socket.on("INIT", data => {
+      console.log("init", data);
       this.$store.commit("updateUser", data.user);
       this.$store.commit("updateUsers", data.users);
+      this.$store.commit("switchToDashboard");
     });
 
     this.$socket.on("JOIN_USER", data => {

@@ -1,15 +1,17 @@
 const uuid = require("uuid");
 
 class Player {
-  constructor(id, symbol) {
+  constructor(id, symbol, name) {
     this.id = id;
     this.symbol = symbol;
+    this.name = name;
   }
 
   getDetails() {
     return {
       id: this.id,
       symbol: this.symbol,
+      name: this.name,
     };
   }
 }
@@ -151,7 +153,7 @@ class Game {
 
     if (!this.board[r][c].isOccupied()) {
       this.moves += 1;
-      
+
       this.board[r][c].setPlayer(player);
 
       if (this.checkFinished()) {

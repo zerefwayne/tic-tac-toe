@@ -4,7 +4,7 @@
       <h2 class="title">XOXO</h2>
       <h6 class="subtitle">A TicTacToe Game</h6>
     </div>
-    <div class="user-details">Welcome, {{user.id}}</div>
+    <div class="user-details">Welcome, {{user.name}}</div>
     <div class="online-users">
       <div class="heading">
         <p>Online Users</p>
@@ -21,7 +21,7 @@
         },}"
         >
           <ul class="user-list">
-            <li class="user-list-item" v-for="user in users" :key="user.id">{{user.id}}</li>
+            <li class="user-list-item" v-for="user in users" :key="user.id">{{user.name}}</li>
           </ul>
         </vue-scroll>
       </div>

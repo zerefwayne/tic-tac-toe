@@ -27,8 +27,8 @@ const getUsers = () => {
   return currentUsers;
 };
 
-const initUser = (socket) => {
-  let user = new User(socket);
+const initUser = (socket, initData) => {
+  let user = new User(socket, initData.name);
 
   users[socket.id] = user;
 
@@ -40,6 +40,8 @@ const initUser = (socket) => {
   const informPayload = {
     user: user.getDetails(),
   };
+
+  console.log(initPayload);
 
   socket.emit("INIT", initPayload);
 
@@ -70,12 +72,15 @@ const detachUser = (socket) => {
 io.on("connection", (socket) => {
   console.log("connected", socket.id);
 
-  initUser(socket);
+  socket.on("INIT_USER", (initData) => {
+    initUser(socket, initData);
+  });
 
   socket.on("NEW_GAME", () => {
     let game = new Game();
+    let user = users[socket.id];
 
-    let player = new Player(socket.id, "X");
+    let player = new Player(socket.id, "X", user.name);
 
     game.setPlayer1(player);
 
@@ -92,9 +97,11 @@ io.on("connection", (socket) => {
 
   socket.on("JOIN_GAME", (gameId) => {
     if (games[gameId] != null) {
+      let user = users[socket.id];
+
       let game = games[gameId];
 
-      let player = new Player(socket.id, "O");
+      let player = new Player(socket.id, "O", user.name);
 
       games[gameId].setPlayer2(player);
 
@@ -107,7 +114,6 @@ io.on("connection", (socket) => {
       socket.emit("ENTER_GAME", payload);
       socket.to(gameId).emit("UPDATE_GAME", payload);
     }
-
   });
 
   socket.on("LEAVE_GAME", (gameId) => {
@@ -116,7 +122,6 @@ io.on("connection", (socket) => {
     delete games[gameId];
 
     io.sockets.in(gameId).emit("LEAVE_GAME");
-
   });
 
   socket.on("START_GAME", (gameId) => {
@@ -160,7 +165,9 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnecting", function () {
-    detachUser(socket);
+    if (users[socket.id] != null) {
+      detachUser(socket);
+    }
   });
 
   socket.on("disconnect", () => {
