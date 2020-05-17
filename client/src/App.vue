@@ -89,13 +89,14 @@ export default {
   methods: {
     joinGame() {
       this.$socket.emit("JOIN_GAME", this.joinGameId);
+      this.joinGameId = null;
     },
     createGame() {
       console.log("Creating new game!");
       this.$socket.emit("NEW_GAME");
     },
     leaveGame() {
-      this.$socket.emit("LEAVE_GAME");
+      this.$socket.emit("LEAVE_GAME", this.game.id);
     },
     startGame() {
       this.$socket.emit("START_GAME", this.game.id);
@@ -131,8 +132,7 @@ export default {
       }
     },
     playMove(r, c) {
-
-      if(this.game.state != 2) {
+      if (this.game.state != 2) {
         return;
       }
 
@@ -184,9 +184,6 @@ export default {
     this.$socket.on("LEAVE_GAME", () => {
       this.inGame = false;
     });
-
-
-
   }
 };
 </script>

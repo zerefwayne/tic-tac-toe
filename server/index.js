@@ -49,6 +49,15 @@ const initUser = (socket) => {
 const detachUser = (socket) => {
   let user = users[socket.id];
 
+  let rooms = socket.rooms;
+
+  console.log(rooms);
+
+  Object.keys(rooms).forEach((game) => {
+    delete games[game];
+    io.sockets.in(game).emit("LEAVE_GAME");
+  });
+
   const payload = {
     user: user.getDetails(),
   };
@@ -98,11 +107,16 @@ io.on("connection", (socket) => {
       socket.emit("ENTER_GAME", payload);
       socket.to(gameId).emit("UPDATE_GAME", payload);
     }
+
   });
 
-  socket.on("LEAVE_GAME", () => {
+  socket.on("LEAVE_GAME", (gameId) => {
     socket.emit("LEAVE_GAME");
-    socket.leaveAll();
+
+    delete games[gameId];
+
+    io.sockets.in(gameId).emit("LEAVE_GAME");
+
   });
 
   socket.on("START_GAME", (gameId) => {
@@ -123,7 +137,6 @@ io.on("connection", (socket) => {
     let c = data.move.c;
 
     if (games[gameId] != null) {
-
       games[gameId].playMove(r, c);
 
       const payload = {
@@ -132,11 +145,9 @@ io.on("connection", (socket) => {
 
       io.sockets.in(gameId).emit("UPDATE_GAME", payload);
     }
-
   });
 
   socket.on("RESET_GAME", (gameId) => {
-
     if (games[gameId] != null) {
       games[gameId].resetGame();
 
@@ -146,12 +157,13 @@ io.on("connection", (socket) => {
 
       io.sockets.in(gameId).emit("UPDATE_GAME", payload);
     }
+  });
 
-
+  socket.on("disconnecting", function () {
+    detachUser(socket);
   });
 
   socket.on("disconnect", () => {
-    detachUser(socket);
     console.log("disconnected", socket.id);
   });
 });
