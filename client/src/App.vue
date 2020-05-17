@@ -1,29 +1,31 @@
 <template>
   <div id="app">
-    
-    <div v-if="activeComponent != 'app-welcome'" class="app-sidebar-container">
-      <app-sidebar v-bind:user="user" v-bind:users="users" />
+    <div class="app-sidebar-container">
+      <template v-if="activeComponent != 'app-welcome'">
+        <app-sidebar v-bind:user="user" v-bind:users="users" />
+      </template>
     </div>
     <div class="app-content-container">
-      <component :is="activeComponent"></component>
+        <component :is="activeComponent"></component>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 import Sidebar from "./components/Sidebar.vue";
 import Dashboard from "./components/Dashboard.vue";
 import GameScreen from "./components/GameScreen.vue";
 import Welcome from "./components/Welcome.vue";
 
-import { mapState } from "vuex";
 export default {
   name: "App",
   components: {
     "app-sidebar": Sidebar,
     "app-gamescreen": GameScreen,
     "app-dashboard": Dashboard,
-    "app-welcome": Welcome
+    "app-welcome": Welcome,
   },
   data() {
     return {
@@ -39,6 +41,7 @@ export default {
     activeComponent: state => state.activeComponent
   }),
   mounted() {
+
     this.$socket.on("INIT", data => {
       console.log("init", data);
       this.$store.commit("updateUser", data.user);
@@ -85,6 +88,7 @@ export default {
   .app-sidebar-container {
     flex: 22% 0 0;
     border-right: 1px solid #dddddd;
+    background-color: #0052cc;
   }
 
   .app-content-container {

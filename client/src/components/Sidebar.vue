@@ -21,24 +21,35 @@
         },}"
         >
           <ul class="user-list">
-            <li class="user-list-item" v-for="user in users" :key="user.id">{{user.name}}</li>
+            <fade-transition group>
+              <li class="user-list-item" v-for="user in users" :key="user.id">{{user.name}}</li>
+            </fade-transition>
           </ul>
         </vue-scroll>
       </div>
     </div>
     <div class="credits">
-      Developed by <a href="https://www.github.com/zerefwayne" target="_blank" class="profile-link">Aayush Joglekar</a>
+      Developed by
+      <a
+        href="https://www.github.com/zerefwayne"
+        target="_blank"
+        class="profile-link"
+      >Aayush Joglekar</a>
     </div>
   </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
+import { FadeTransition } from "vue2-transitions";
 
 export default {
   name: "Sidebar",
   data() {
     return {};
+  },
+  components: {
+    FadeTransition,
   },
   mounted() {
     console.log(this.user);
@@ -139,16 +150,15 @@ export default {
 
   .credits {
     padding: 1rem;
-    background-color: #0052CC;
+    background-color: #0052cc;
     color: white;
     text-align: center;
 
-    .profile-link{
+    .profile-link {
       text-decoration: none;
       text-decoration: underline;
       color: white;
     }
-
   }
 }
 </style>
