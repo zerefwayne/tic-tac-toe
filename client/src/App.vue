@@ -95,18 +95,6 @@ export default {
     flex: 1 0 0;
   }
 
-  .grid {
-    td {
-      width: 100px;
-      height: 100px;
-      text-align: center;
-      cursor: pointer;
-      // display: flex;
-      // justify-content: center;
-      // align-items: center;
-      border: 1px solid gray;
-    }
-    border-collapse: collapse;
-  }
+  
 }
 </style>

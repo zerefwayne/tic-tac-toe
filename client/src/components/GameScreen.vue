@@ -8,6 +8,11 @@
           v-if="game.players.player1 != null"
         >{{ game.players.player1.name }}</span>
       </div>
+      <div class="game-state">
+        <p class="mb-2">{{getStatus()}}</p>
+        <button class="btn btn-success" v-if="game.state == 1" @click="startGame">Start Game</button>
+        <button @click="resetGame" v-if="game.state == 3" class="btn btn-success">Play Again?</button>
+      </div>
       <div class="player player2">
         <img src="@/assets/o-white.png" />
         <span
@@ -18,30 +23,17 @@
       </div>
     </div>
     <div class="game-window">
-      <p class="mt-4">{{getStatus()}}</p>
-
-      <button class="btn btn-success" v-if="game.state == 1" @click="startGame">Start Game</button>
-
-      <template v-if="game.state >= 2">
-        <h2>{{getMove()}}</h2>
-
-        <div class="mt-5">
-          <table class="grid">
-            <tr v-for="r in [0, 1, 2]" :key="r">
-              <td
-                v-for="c in [0, 1, 2]"
-                :key="`${r}${c}`"
-                @click="() => {playMove(r, c)}"
-              >{{ game.board[r][c].player ? game.board[r][c].player.symbol : "" }}</td>
-            </tr>
-          </table>
-        </div>
-
-        <p
-          v-if="game.state == 3"
-        >{{ game.result.tie ? "It's a tie" : `Player ${game.result.winner.name} won!` }}</p>
-        <button @click="resetGame" v-if="game.state == 3" class="btn btn-success">Play Again?</button>
-      </template>
+      <!-- <template v-if="game.state >= 2"> -->
+      <div class="mt-5">
+        <table class="grid">
+          <tr v-for="r in [0, 1, 2]" :key="r">
+            <td v-for="c in [0, 1, 2]" :key="`${r}${c}`" @click="() => {playMove(r, c)}">
+              <img :src="computeSymbol(game.board[r][c].player)" />
+            </td>
+          </tr>
+        </table>
+      </div>
+      <!-- </template> -->
     </div>
     <div class="game-footer">
       <span class="mr-3" v-clipboard:copy="game.id" style="cursor: pointer;">Game ID: {{ game.id }}</span>
@@ -70,23 +62,38 @@ export default {
     startGame() {
       this.$socket.emit("START_GAME", this.game.id);
     },
+    computeSymbol(player) {
+      if (player == null) {
+        return "";
+      } else if (player.symbol == "X") {
+        return require("../assets/x-game.png");
+      } else {
+        return require("../assets/o-game.png");
+      }
+    },
     getStatus() {
       let status = "";
 
       switch (this.game.state) {
         case 0:
-          status = "Waiting for 2nd player";
+          status = "";
           break;
         case 1:
-          status = "Ready to start";
+          status = "Ready";
           break;
         case 2:
-          status = "In game!";
+          status = this.getMove();
+          break;
+        case 3:
+          status = this.game.result.tie
+            ? "It's a tie!"
+            : `${this.game.result.winner.name} won!`;
           break;
       }
 
       return status;
     },
+
     getMove() {
       if (this.game.move == 0) {
         this.isMyMove = this.game.players.player1.id === this.user.id;
@@ -97,7 +104,7 @@ export default {
       if (this.isMyMove) {
         return "Your move!";
       } else {
-        return "Other's move!";
+        return `Awaiting turn`;
       }
     },
     playMove(r, c) {
@@ -112,8 +119,6 @@ export default {
         };
 
         this.$socket.emit("MOVE_GAME", payload);
-      } else {
-        alert("Not your move buddy!");
       }
     },
     resetGame() {
@@ -124,6 +129,21 @@ export default {
 </script>
 
 <style lang="scss">
+.grid {
+  td {
+    width: 150px;
+    height: 150px;
+    text-align: center;
+    cursor: pointer;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    border: 4px solid #0052cc;
+  }
+  border-collapse: collapse;
+  border-style: hidden;
+}
+
 .app-game {
   height: 100%;
   display: flex;
@@ -135,6 +155,15 @@ export default {
     color: white;
 
     align-items: stretch;
+
+    .game-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 2rem;
+    }
 
     .player {
       flex: 1;
@@ -157,6 +186,10 @@ export default {
 
   .game-window {
     flex: 1;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .game-footer {

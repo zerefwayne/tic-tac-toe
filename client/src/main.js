@@ -12,7 +12,9 @@ import "bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles/global.scss";
 
-const io = socket.connect("http://localhost:5000/");
+const io = socket.connect(process.env.VUE_APP_SOCKET_URL || "http://localhost:5000/");
+
+console.log(io);
 
 Vue.use(vuescroll);
 Vue.use(VueClipboard);

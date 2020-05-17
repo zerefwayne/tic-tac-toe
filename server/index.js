@@ -6,7 +6,7 @@ const http = require("http").Server(app);
 const User = require("./models/User");
 const { Game, Player } = require("./models/Game");
 
-let PORT = 5000;
+let PORT = process.env.PORT || 5000;
 
 http.listen(PORT, function () {
   console.log(`Tic-tac-toe game server running on port: ${PORT}`);
