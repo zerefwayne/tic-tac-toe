@@ -28,6 +28,7 @@ export default new Vuex.Store({
     },
     updateUsers(state, payload) {
       state.users = payload;
+      state.users.sort((a, b) => (a.id < b.id ? -1 : 1));
     },
     joinUser(state, payload) {
       state.users.push(payload);

@@ -49,7 +49,7 @@ export default {
     return {};
   },
   components: {
-    FadeTransition,
+    FadeTransition
   },
   mounted() {
     console.log(this.user);
