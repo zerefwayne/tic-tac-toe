@@ -1,23 +1,30 @@
 <template>
   <div class="app-dashboard">
-    <h3>New Game</h3>
-    <button class="btn btn-primary mt-4" @click="createGame">New Game</button>
-    <hr class="mt-4 mb-4" />
-    <h3>Join Game</h3>
-    <form class="mt-4" @submit.prevent="joinGame">
-      <div class="form-group">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Enter Game ID"
-          style="width: 300px"
-          v-model="joinGameId"
-        />
-      </div>
-      <div class="form-group">
-        <button class="btn btn-primary" type="submit">Join Game</button>
-      </div>
-    </form>
+    <div class="new-game">
+      <h3 class="title">New Game</h3>
+      <form class="mt-4" @submit.prevent="createGame">
+        <div class="form-group">
+          <button class="btn btn-new" type="submit">Continue</button>
+        </div>
+      </form>
+    </div>
+    <div class="join-game">
+      <h3 class="title">Join Game</h3>
+      <form class="mt-4" @submit.prevent="joinGame">
+        <div class="form-group">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Enter Game ID"
+            style="width: 300px"
+            v-model="joinGameId"
+          />
+        </div>
+        <div class="form-group">
+          <button class="btn btn-join" type="submit">Continue</button>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -39,11 +46,55 @@ export default {
       this.$socket.emit("NEW_GAME");
     }
   },
-  mounted() {
-    
-  }
+  mounted() {}
 };
 </script>
 
 <style lang="scss">
+.app-dashboard {
+  background-color: red;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  .new-game {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 5rem;
+    border-bottom: 1px solid #dddddd;
+    background-color: #ffffff;
+
+    .btn-new {
+        background-color: #0052CC;
+        color: white;
+    }
+
+    .title {
+      color: #0052CC;
+      font-size: 2.7rem;
+    }
+  }
+
+  .join-game {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 5rem;
+    background-color: darken($color: #FFFFFF, $amount: 2%);
+
+    .btn-join {
+        background-color: #0052CC;
+        color: white;
+    }
+
+    .title {
+      color: #0052CC;
+      font-size: 2.7rem;
+    }
+  }
+}
 </style>

@@ -84,16 +84,15 @@ export default {
 
   display: flex;
   justify-items: stretch;
+  align-items: stretch;
 
   .app-sidebar-container {
     flex: 22% 0 0;
-    border-right: 1px solid #dddddd;
     background-color: #0052cc;
   }
 
   .app-content-container {
     flex: 1 0 0;
-    padding: 2rem;
   }
 
   .grid {
