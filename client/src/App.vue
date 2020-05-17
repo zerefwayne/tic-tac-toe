@@ -64,7 +64,7 @@
 
 <script>
 import Sidebar from "./components/Sidebar.vue";
-
+import { mapState} from 'vuex';
 export default {
   name: "App",
   components: {
@@ -72,17 +72,16 @@ export default {
   },
   data() {
     return {
-      user: {
-        id: "",
-        isPlaying: false
-      },
-      users: [],
       inGame: false,
       joinGameId: null,
       game: null,
       isMyMove: false
     };
   },
+  computed: mapState({
+    user: state => state.user,
+    users: state => state.users
+  }),
   methods: {
     joinGame() {
       this.$socket.emit("JOIN_GAME", this.joinGameId);
